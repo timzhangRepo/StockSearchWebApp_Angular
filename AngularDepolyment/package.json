@@ -1,0 +1,12 @@
+{
+  "name": "angularAppServer",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "~4.16.1",
+    "path": "^0.12.7"
+  }
+}
