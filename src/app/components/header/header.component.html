@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-purple fixed-top">
+  <a class="navbar-brand abs">Stock Search</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="navbar-collapse collapse" id="collapsingNavbar">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="" data-target="#myModal" data-toggle="modal"><span (click)="click($event,'0')">Search</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/watchlist" data-target="#myModal" data-toggle="modal"><span (click)="click($event,'1')">Watchlist</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/portfolio" href="" data-target="#myModal" data-toggle="modal"><span (click)="click($event,'2')">Portfolio</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>

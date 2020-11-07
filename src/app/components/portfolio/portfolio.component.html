@@ -1,0 +1,110 @@
+<div style="width: 100%; height: 80px"></div>
+<div class="container">
+  <div class="col-12" style="margin-bottom: 20px">
+    <h2>My Portfolio</h2>
+  </div>
+  <div class="row">
+    <p *ngIf="isEmpty" class="col-12"style="text-align: center;display: flex; justify-content: center; align-items: center;  background: #fef1c4; height: 40px; border-radius: 7px">
+      <span>Currently you don't have any stock in your portfolio</span>
+    </p>
+  </div>
+  <div *ngIf="!isEmpty">
+    <div class="container" *ngFor="let item of portFolioList; let key=index">
+      <div class="stockBOX border container" [id]="'box'+key" style="border-radius: 5px; margin-bottom: 20px">
+        <div class="row">
+          <div class="col-12">
+            <span style="font-size: 30px">{{portFolioList[key].ticker}}</span>
+            <span class="text-muted"> {{portFolioList[key].name}}</span>
+          </div>
+        </div>
+        <div class="row border-top" >
+          <div class="col-sm-6 infoboxUpper" style="margin-top: 15px;">
+            <div class="row" >
+              <div class="col-6" >Quantity:</div>
+              <div class="col-6" style="text-align: right">{{this.portFolioList[key].quantity}}</div>
+            </div>
+            <div class="row">
+              <div class="col-6">Avg.Cost/Share:</div>
+              <div class="col-6" style="text-align: right">{{divide(this.portFolioList[key].totalCost,this.portFolioList[key].quantity)}}</div>
+            </div>
+            <div class="row" style="margin-bottom: 15px;">
+              <div class="col-6">Total Cost:</div>
+              <div class="col-6" style="text-align: right">{{this.portFolioList[key].totalCost | number: '1.0-2'}}</div>
+            </div>
+          </div>
+          <div class="col-sm-6 infoboxLower" style="margin-top: 15px;">
+            <div class="row">
+              <div class="col-6">Change:</div>
+              <div class="col-6" style="text-align: right" id="{{'c'+key}}">
+                {{getChange(this.portFolioList[key].quantity, this.portFolioList[key].totalCost, this.portFolioList[key].currentPrice, key)}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">Current Price:</div>
+              <div class="col-6" style="text-align: right" id="{{'p'+key}}">{{this.portFolioList[key].currentPrice}}</div>
+            </div>
+            <div class="row" style="margin-bottom: 15px;">
+              <div class="col-6">Market Value:</div>
+              <div class="col-6" style="text-align: right" id="{{'v'+key}}">
+                {{this.portFolioList[key].quantity*this.portFolioList[key].currentPrice | number: '1.2-3'}}
+                {{setColor(this.portFolioList[key].quantity, this.portFolioList[key].totalCost, this.portFolioList[key].currentPrice, key)}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row border-top" >
+          <div class="col-12" style="text-align: right">
+            <button class="btn btn-primary" style="margin: 5px" (click)="buy(portFolioList[key].ticker, purchase)">Buy</button>
+            <button class="btn btn-danger" style="background: #df4b51; margin: auto" (click)="sell(portFolioList[key].ticker, sale)">Sell</button>
+          </div>
+          <ng-template #purchase let-modal>
+            <div class="modal-header">
+              <h6>{{this.portFolioList[key].ticker}}</h6>
+              <button type="button" style="outline: none" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              price: {{currentPrice}}
+              <br>
+              quantity: <input id="quantity" type="number" [(ngModel)]="totalOfStockToPurchase" min="1" style="font-size: 15px; width: 200px; outline: none; border-color: #9ecaed; border-radius: 5px" >
+            </div>
+            <div class="modal-footer" >
+              <div class="container">
+                <div class="row">
+                  <div class="col-6">total: {{totalOfStockToPurchase * currentPrice | number:'1.0-2'}}</div>
+                  <div class="col-6" style="text-align: right">
+                    <button class="btn btn-success" style="margin: auto" (click)="confirmBuy(portFolioList[key].ticker)">Buy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template #sale let-modal>
+            <div class="modal-header">
+              <h6>{{this.portFolioList[key].ticker}}</h6>
+              <button type="button" style="outline: none" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              price: {{currentPrice}}
+              <br>
+              quantity: <input type="number" [(ngModel)]="totalOfStockToSell" min="1" style="font-size: 15px; width: 200px; outline: none; border-color: #9ecaed; border-radius: 5px" >
+            </div>
+            <div class="modal-footer" >
+              <div class="container">
+                <div class="row">
+                  <div class="col-6">total: {{totalOfStockToSell * currentPrice | number:'1.0-2'}}</div>
+                  <div class="col-6" style="text-align: right">
+                    <button class="btn btn-danger" style="margin: auto" (click)="confirmSell(portFolioList[key].ticker)">Sell</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

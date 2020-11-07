@@ -1,0 +1,28 @@
+<div style="width: 100%; height: 80px"></div>
+<div class="container">
+  <div class="col-12" style="margin-bottom: 20px">
+    <h2>My WatchList</h2>
+  </div>
+  <div class="row" *ngIf="isEmpty">
+    <p class="col-12"style="text-align: center;display: flex; justify-content: center; align-items: center;  background: #fef1c4; height: 40px; border-radius: 7px">
+      <span>Currently you don't have any stock in your watchlist</span>
+    </p>
+  </div>
+  <div *ngIf="!isEmpty">
+  <div class="container" *ngFor="let item of watchList; let key=index">
+    <div class="stockBOX" [id]="'box'+key">
+      <button type="button" class="close" aria-label="Close" style="outline: none" (click)="deleteFromList(key)">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    <div class="row">
+      <div class="col-6" *ngIf="watchList">
+        <h3>{{watchList[key].ticker}}</h3>
+        <p>{{watchList[key].name}}</p>
+      </div>
+      <div class="col-6" style="text-align: right;" [id]=key>
+      </div>
+    </div>
+    </div>
+  </div>
+  </div>
+</div>

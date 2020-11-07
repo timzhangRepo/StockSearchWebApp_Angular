@@ -1,0 +1,206 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div style="width: 100%; height: 60px"></div>
+<div class="container" *ngIf="!resultsFound">
+  <div class="col-12" style="height: 10px"></div>
+  <div class="row">
+    <p class="col-12"style="text-align: center;display: flex; justify-content: center; align-items: center;  background: #f3d1d4; height: 40px; border-radius: 7px">
+      <span>No results Found. Please enter valid Ticker</span>
+    </p>
+  </div>
+</div>
+<div class="container" *ngIf="stockAddedSign" style="margin-top: 10px; margin-bottom: 0px">
+  <div class="col-12" style="height: 10px"></div>
+  <div class="row">
+    <p class="col-12"style="text-align: center;display: flex; justify-content: center; align-items: center;  background: #d1f3d5; height: 40px; border-radius: 7px">
+      <span>{{this.genRecord.ticker}} added to Watchlist</span>
+    </p>
+  </div>
+</div>
+
+
+<div class="container" *ngIf="boughtsucessful" style="margin-top: 10px; ">
+  <div class="col-12" style="height: 10px"></div>
+  <div class="row">
+    <p class="col-12"style="text-align: center;display: flex; justify-content: center; align-items: center;  background: #d1f3d5; height: 40px; border-radius: 7px">
+      <span>{{this.genRecord.ticker}} bought successfully</span>
+    </p>
+  </div>
+</div>
+
+
+<div class="container banner" style="padding-left: 30px; padding-right: 30px" *ngIf="resultsFound">
+   <div class="row">
+     <div class="col-8">
+       <h1>{{genRecord.ticker}}
+         <span *ngIf="!watchListStar" class="material-icons" style="font-size: 25px; cursor:pointer; " (click)="watchListAddRemove('0',genRecord.ticker)" >star_outline</span>
+         <span *ngIf="watchListStar" class="material-icons" style="font-size: 25px; cursor:pointer; color:#ffe00d;" (click)="watchListAddRemove('1', genRecord.ticker)" >star</span>
+       </h1>
+       <!-- 在这里添加收藏-->
+     </div>
+     <div class="col-4" style="text-align: right" >
+       <h1 [ngStyle]="{'color': stockWentUp? ' green' : '#f21e13'}">{{this.lastRecord[0].last | number: '1.2-2'}}</h1>
+     </div>
+   </div>
+  <div class="row">
+    <div class="col-4" >
+      <h4 class="text-muted">{{genRecord.name}}</h4>
+    </div>
+    <div class="col-4">
+
+    </div>
+    <div class="col-4" style="text-align: right">
+      <h4 [ngStyle]="{'color': stockWentUp? ' green' : '#f21e13'}" >
+        <span *ngIf="stockWentUp" style="color: green">▲</span>
+        <span *ngIf="!stockWentUp" style="color: #f21e13">▼</span>
+        {{this.change}} ({{this.changePercentage}}%)
+      </h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4 text-muted" >{{genRecord.exchangeCode}}</div>
+    <div class="col-8" style="text-align: right">{{lastSaleTimestamp|date:'yyyy-MM-dd HH:mm:ss'}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <button class="btn btn-success" style="margin: auto" (click)="buy(purchase, genRecord.ticker)">Buy</button>
+      <ng-template #purchase let-modal>
+        <div class="modal-header">
+          <h6>{{genRecord.ticker}}</h6>
+          <button type="button" style="outline: none" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          price: {{this.lastRecord[0].last}}
+          <br>
+          quantity: <input id="quantity" type="number" [(ngModel)]="total" min="1" style="font-size: 15px; width: 200px; outline: none; border-color: #9ecaed; border-radius: 5px" >
+        </div>
+        <div class="modal-footer" >
+          <div class="container">
+            <div class="row">
+            <div class="col-6">total: {{total * this.lastRecord[0].last | number:'1.0-2'}}</div>
+            <div class="col-6" style="text-align: right">
+              <button class="btn btn-success" style="margin: auto" (click)="portFolioAdd()">Buy</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <div class="col-8"></div>
+  </div>
+  <div class="row" style="margin-top: 20px">
+    <p class="col-12" style="text-align: center" *ngIf="marketOpen">
+      <span style="background: #d1f3d5">Market is Open</span>
+    </p>
+    <p class="col-12" style="text-align: center" *ngIf="!marketOpen">
+      <span style="background: #f3d1d4">Market Closed on {{lastSaleTimestamp | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+    </p>
+  </div>
+  <div class="row" style="margin: 5px"></div>
+  <mat-tab-group clas="row" dynamicHeight mat-stretch-tabs>
+    <mat-tab label="Summary">
+      <div  class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="row">
+              <div class="col-6" style="text-align: center">
+                <p class="fields" style="margin-top: 30px">High Price: {{this.lastRecord[0].high}}</p>
+                <p class="fields">Low Price: {{this.lastRecord[0].low}}</p>
+                <p class="fields">Open Price: {{this.lastRecord[0].open}}</p>
+                <p class="fields">Prev.Close Price: {{this.lastRecord[0].prevClose}}</p>
+                <p class="fields" style="margin-bottom: 30px">Volume: {{this.lastRecord[0].volume}}</p>
+              </div>
+              <div class="col-6" *ngIf="this.marketOpen">
+                <p class="fields" style="margin-top: 30px">Mid Price: {{this.lastRecord[0].mid}}</p>
+                <p class="fields">Ask Price: {{this.lastRecord[0].askPrice}}</p>
+                <p class="fields">Ask Size: {{this.lastRecord[0].askSize}}</p>
+                <p class="fields">Bid Price: {{this.lastRecord[0].bidPrice}}</p>
+                <p   class="fields" style="margin-bottom: 30px">Bid Size: {{this.lastRecord[0].bidSize}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12"style="text-align: center" >
+                <h6 class="text-center">Company's description</h6>
+              </div>
+              <p>Start Date: {{genRecord.startDate}}</p>
+              <p>{{genRecord.description}}</p>
+            </div>
+          </div>
+          <div class="col-sm-6 container">
+            <highcharts-chart
+              id="container"
+              [Highcharts]="Highcharts"
+              [constructorType]="chartConstructor"
+              [options]="chartOptions"
+              [callbackFunction]="chartCallback"
+              [(update)]="updateFromInput"
+              [oneToOne]="true"
+              style="width: 100%; height: 400px; display: block;"
+            >
+            </highcharts-chart>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Top News" >
+      <div class="container" style="padding-top: 20px">
+        <div class="row">
+        <div class="col-md-6" *ngFor="let item of newsRecord; let key=index" style="height: 100px; margin-bottom: 20px">
+          <div class="col-12 newsBox" (click)="open(content, key)" style="cursor: pointer">
+          <div class="row" >
+          <div class="col-4 imageBox" style="display: flex; justify-content: center; align-items: center; height: 100px"><img src={{item.urlToImage}} style="width: 90px; border-radius: 5px" ></div>
+          <div class="col-8" style="height: 100px; display: inline-block; text-align: left;">
+            <p class="newsPara" style="display: flex; justify-content: left; align-items: center; height: 100px; font-size: 15px">{{item.title}}</p>
+          </div>
+          </div>
+          </div>
+        </div>
+        </div>
+        <ng-template #content let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">{{newsRecord[newsIdxClicked].source.name}} <br>
+              <span class="text-muted" style="font-size: 15px;"> {{newsRecord[newsIdxClicked].publishedAt | date: 'MMMM dd, yyyy'}}</span>
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h6>{{newsRecord[newsIdxClicked].title}}</h6>
+            <p>{{newsRecord[newsIdxClicked].description}}</p>
+            <p class="text-muted">For more details click <a href="{{newsRecord[newsIdxClicked].url}}">here</a></p>
+          </div>
+          <div class="modal-footer shareModal" >
+            <div class="container iconBOX" style="width: 100%">
+              <div class="col">Share</div>
+              <div class="col">
+                <a href="https://twitter.com/intent/tweet?text={{newsRecord[newsIdxClicked].title}} &url={{newsRecord[newsIdxClicked].url}}"> <i class="fa fa-twitter" style="color: #3287ff;  font-size: 2.5em;}" ></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{newsRecord[newsIdxClicked].url}}&quote={{newsRecord[newsIdxClicked].title}}"><i class="fa fa-foursquare" style="color: #001cff;  font-size: 2.5em;}"></i></a>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </mat-tab>
+    <mat-tab label="Charts" >
+      <div class="boxChart__container">
+          <highcharts-chart
+            id="container2"
+            [Highcharts]="Highcharts2"
+            [constructorType]="chartConstructor2"
+            [options]="chartOptions2"
+            [callbackFunction]="chartCallback2"
+            [(update)]="updateFromInput2"
+            [oneToOne]="true"
+            style="width: 100%; height: 400px; display: block;"
+          >
+          </highcharts-chart>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+

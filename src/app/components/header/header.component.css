@@ -1,0 +1,21 @@
+nav{
+  background: #8162ff;
+}
+.nav-item{
+  text-align: right;
+}
+.nav-link>span{
+  padding:10px;
+}
+.nav-link>span{
+  border: 2px solid transparent;
+  border-radius: 15px;
+}
+#act{
+  border: 2px solid white;
+  border-radius: 15px;
+}
+.navbar-brand{
+  font-size: 25px;
+}
+
